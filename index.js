@@ -1,17 +1,20 @@
-import drag from "./features/drag.js"
+import drag from "./features/drag.js" // importing dragging functionalities
+import insertCanvasElement from "./utilities/insertCanvasElement.js"
+import makeItemTranslate from "./utilities/translate.js"
 
 // universal values needed for working the canvas
 globalThis.universalValues = {
-    currentDragItem: undefined,
-    draggingOn: false,
+    activeItem: undefined, // the element, which is clicked last
+    draggingOn: false, 
     stickingWithEdges: false,
     dragItemTouchedOnX: 0,
     dragItemTouchedOnY: 0,
-    canvasZoomed: 0
+    canvasZoomed: 1,
+    canvasItems: []
 }
 
 class Node {
-    constructor({ id }) {
+    constructor(id) {
         this.node = document.getElementById(id)
     }
     // to get positions of every corner points
@@ -21,6 +24,18 @@ class Node {
         bottomLeft: () => this.node.getBoundingClientRect().x + this.node.getBoundingClientRect().width,
         bottomRight: () => this.node.getBoundingClientRect().y + this.node.getBoundingClientRect().height,
     }
+}
+
+class DragItem extends Node {
+    // initializing assigning default styles, universalValues, functions and eventListeners of every draggable item
+    init = (translateX, translateY) => {
+        // console.log(this.node)
+        this.node.addEventListener("mousedown", this.#dragStart)
+        universalValues.activeItem = this.node
+        makeItemTranslate(translateX, translateY)
+    }
+    // assigning universalValues which are need to start dragging the item on the canvas
+    #dragStart = drag.start(this.node)
 }
 
 class Canvas extends Node {
@@ -36,15 +51,14 @@ class Canvas extends Node {
     #dragging = drag.run(this.points)
     // functionality to stop dragging a item on canvas (work with eventListeners)
     #dragStop = drag.stop
-}
-
-class DragItem extends Node {
-    // initializing assigning default styles, universalValues, functions and eventListeners of every draggable item
-    init = () => {
-        this.node.addEventListener("mousedown", this.#dragStart)
+    // functionality to add an item into the canvas
+    add = async (element, translateX, translateY) => {
+        // inserting item to canvas and getting id of the element
+        const insertedElementId = insertCanvasElement(this.node, element)
+        // initializing the element in canvas
+        const insertedElement = new DragItem(insertedElementId)
+        insertedElement.init(translateX, translateY)
     }
-    // assigning universalValues which are need to start dragging the item on the canvas
-    #dragStart = drag.start(this.node)
 }
 
-export default { Canvas, DragItem }
+export default Canvas
