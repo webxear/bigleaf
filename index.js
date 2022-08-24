@@ -13,7 +13,7 @@ globalThis.universalValues = {
     canvasItems: []
 }
 
-class Node {
+class BigLeafElementNode {
     constructor(id) {
         this.node = document.getElementById(id)
     }
@@ -26,7 +26,7 @@ class Node {
     }
 }
 
-class DragItem extends Node {
+class DragItem extends BigLeafElementNode {
     // initializing assigning default styles, universalValues, functions and eventListeners of every draggable item
     init = (translateX, translateY) => {
         // console.log(this.node)
@@ -38,7 +38,7 @@ class DragItem extends Node {
     #dragStart = drag.start(this.node)
 }
 
-class Canvas extends Node {
+class Canvas extends BigLeafElementNode {
     // initializing assigning default styles, universalValues, functions and eventListeners of canvas
     init = () => {
         universalValues.canvasZoomed = getComputedStyle(this.node).zoom // inserting zoomed value for able to operation in zoomed mode also
