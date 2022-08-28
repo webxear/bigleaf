@@ -1,6 +1,6 @@
 import drag from "./features/drag.js" // importing dragging functionalities
 import insertCanvasElement from "./utilities/insertCanvasElement.js"
-import makeItemTranslate from "./utilities/translate.js"
+import makeElementTranslate from "./utilities/translateElement.js"
 
 // universal values needed for working the canvas
 globalThis.universalValues = {
@@ -32,7 +32,7 @@ class DragItem extends BigLeafElementNode {
         // console.log(this.node)
         this.node.addEventListener("mousedown", this.#dragStart)
         universalValues.activeItem = this.node
-        makeItemTranslate(translateX, translateY)
+        makeElementTranslate(translateX, translateY) // initiating element to wanted place in canvas
     }
     // assigning universalValues which are need to start dragging the item on the canvas
     #dragStart = drag.start(this.node)

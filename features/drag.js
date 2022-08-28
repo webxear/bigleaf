@@ -1,4 +1,4 @@
-import makeItemTranslate from "../utilities/translate.js" // functionalities of translating items on canvas
+import makeElementTranslate from "../utilities/translateElement.js" // functionalities of translating items on canvas
 
 const drag = {
     start: node => {
@@ -15,7 +15,7 @@ const drag = {
             let translateY = e.clientY / universalValues.canvasZoomed - points.topRight() - universalValues.dragItemTouchedOnY
             if (universalValues.draggingOn) {
                 universalValues.activeItem.style["user-select"] = "none"
-                makeItemTranslate(translateX, translateY)
+                makeElementTranslate(translateX, translateY)
             }
         }
     },
