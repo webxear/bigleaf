@@ -1,4 +1,5 @@
 import drag from "./features/drag.js" // importing dragging functionalities
+import zoom from "./features/zoom.js"
 import insertCanvasElement from "./utilities/insertCanvasElement.js"
 import makeElementTranslate from "./utilities/translateElement.js"
 
@@ -10,6 +11,7 @@ globalThis.universalValues = {
     dragItemTouchedOnX: 0,
     dragItemTouchedOnY: 0,
     canvasZoomed: 1,
+    itemsZoomed: 1,
     canvasItems: []
 }
 
@@ -46,19 +48,23 @@ class Canvas extends BigLeafElementNode {
         this.node.style.overflow = "hidden"
         this.node.addEventListener("mousemove", this.#dragging)
         this.node.addEventListener("mouseup", this.#dragStop)
+        this.node.addEventListener("scroll", () => {console.log('first')})
     }
-    // functionality of dragging a item on canvas (work with eventListeners)
-    #dragging = drag.run(this.points)
-    // functionality to stop dragging a item on canvas (work with eventListeners)
-    #dragStop = drag.stop
     // functionality to add an item into the canvas
     add = async (element, translateX, translateY) => {
         // inserting item to canvas and getting id of the element
         const insertedElementId = insertCanvasElement(this.node, element)
         // initializing the element in canvas
         const insertedElement = new DragItem(insertedElementId)
+        insertedElement.node.style.zoom = universalValues.itemsZoomed
         insertedElement.init(translateX, translateY)
     }
+    // functionality of dragging a item on canvas (work with eventListeners)
+    #dragging = drag.run(this.points, this.node)
+    // functionality to stop dragging a item on canvas (work with eventListeners)
+    #dragStop = drag.stop
+    // functionality to zoom in
+    #zoomIn = () => {console.log('first')}
 }
 
 export default Canvas
