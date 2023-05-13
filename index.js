@@ -6,7 +6,7 @@ import makeElementTranslate from "./utilities/translateElement.js"
 // universal values needed for working the canvas
 globalThis.universalValues = {
     activeItem: undefined, // the element, which is clicked last
-    draggingOn: false, 
+    draggingOn: false,
     stickingWithEdges: false,
     dragItemTouchedOnX: 0,
     dragItemTouchedOnY: 0,
@@ -45,10 +45,10 @@ class Canvas extends BigLeafElementNode {
     init = () => {
         universalValues.canvasZoomed = getComputedStyle(this.node).zoom // inserting zoomed value for able to operation in zoomed mode also
         this.node.style.position = "relative"
-        this.node.style.overflow = "hidden"
+        this.node.style.overflow = "scroll"
         this.node.addEventListener("mousemove", this.#dragging)
         this.node.addEventListener("mouseup", this.#dragStop)
-        this.node.addEventListener("scroll", () => {console.log('first')})
+        this.node.onmousewheel = this.#zoomHandler
     }
     // functionality to add an item into the canvas
     add = async (element, translateX, translateY) => {
@@ -57,6 +57,7 @@ class Canvas extends BigLeafElementNode {
         // initializing the element in canvas
         const insertedElement = new DragItem(insertedElementId)
         insertedElement.node.style.zoom = universalValues.itemsZoomed
+        insertedElement.node.className = `${insertedElement.node.className} bigLeafElement`
         insertedElement.init(translateX, translateY)
     }
     // functionality of dragging a item on canvas (work with eventListeners)
@@ -64,7 +65,16 @@ class Canvas extends BigLeafElementNode {
     // functionality to stop dragging a item on canvas (work with eventListeners)
     #dragStop = drag.stop
     // functionality to zoom in
-    #zoomIn = () => {console.log('first')}
+    #zoomHandler = (e) => {
+        if (e.ctrlKey) {
+            e.preventDefault()
+            if (e.deltaY === -100 && universalValues.itemsZoomed < 100) {
+                zoom.in()
+            } else if ((e.deltaY === 100 && universalValues.itemsZoomed > 0.01)) {
+                zoom.out()
+            }
+        }
+    }
 }
 
 export default Canvas
