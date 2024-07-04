@@ -64,7 +64,7 @@ class Canvas extends BigLeafElementNode {
     #dragging = drag.run(this.points, this.node)
     // functionality to stop dragging a item on canvas (work with eventListeners)
     #dragStop = drag.stop
-    // functionality to zoom in
+    // functionality to zoom in and out
     #zoomHandler = (e) => {
         if (e.ctrlKey) {
             e.preventDefault()
