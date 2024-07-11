@@ -14,7 +14,7 @@ MainCanvas.init()
 HTML will be:
 
 ```html
-# This div is the canvas and every element will be inserted in it
+<!--This is a comment. Comments are not displayed in the browser-->
 <div class="canvas" id="canvas"></div>
 ```
 
