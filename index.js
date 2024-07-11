@@ -40,7 +40,7 @@ class DragItem extends BigLeafElementNode {
     #dragStart = drag.start(this.node)
 }
 
-class Canvas extends BigLeafElementNode {
+class BigLeafCanvas extends BigLeafElementNode {
     // initializing assigning default styles, universalValues, functions and eventListeners of canvas
     init = () => {
         universalValues.canvasZoomed = getComputedStyle(this.node).zoom // inserting zoomed value for able to operation in zoomed mode also
@@ -77,4 +77,4 @@ class Canvas extends BigLeafElementNode {
     }
 }
 
-export default Canvas
+export default BigLeafCanvas
