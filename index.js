@@ -12,7 +12,9 @@ globalThis.universalValues = {
     dragItemTouchedOnY: 0,
     canvasZoomed: 1,
     itemsZoomed: 1,
-    canvasItems: []
+    canvasItems: [],
+    contextMenuData: {},
+    contextMenuStatus: true
 }
 
 class BigLeafElementNode {
@@ -60,6 +62,89 @@ class BigLeafCanvas extends BigLeafElementNode {
         insertedElement.node.className = `${insertedElement.node.className} bigLeafElement`
         insertedElement.init(translateX, translateY)
     }
+    // Functionality for Context Menu
+    contextMenu = ({ status, contextMenuData, style }) => {
+        /*** 
+       @context Menu Structure:
+       [{
+           title: "HERE_WILL_BE_TITLE_OF_THE_MENU_ITEM",
+           func: (func) => func()
+       }]
+       ***/
+        /**
+         * @style object contains the style features of the context menu items
+         * style = {
+         *  backgroundColor: "HERE_WILL_BE_BACKGROUND_COLOR_OF_THE_CONTEXT_MENU_ITEM",
+         *  color: "HERE_WILL_BE_COLOR_OF_THE_TEXT",
+         *  fontSize: "HERE_WILL_BE_FONT_SIZE_OF_THE_TEXT",
+         *  fontWeight: "HERE_WILL_BE_FONT_WEIGHT_OF_THE_TEXT"
+         *  hoverBackgroundColor: "HERE_WILL_BE_BACKGROUND_COLOR_OF_THE_CONTEXT_MENU_ITEM_WHEN_HOVERED",
+         *  hoverColor: "HERE_WILL_BE_COLOR_OF_THE_TEXT_WHEN_HOVERED",
+         *  hoverFontSize: "HERE_WILL_BE_FONT_SIZE_OF_THE_TEXT_WHEN_HOVERED",
+         *  hoverFontWeight: "HERE_WILL_BE_FONT_WEIGHT_OF_THE_TEXT_WHEN_HOVERED",
+         *  padding: "HERE_WILL_BE_PADDING_OF_THE_CONTEXT_MENU_ITEM",
+         * border: "HERE_WILL_BE_BORDER_OF_THE_CONTEXT_MENU_ITEM",
+         * borderRadius: "HERE_WILL_BE_BORDER_RADIUS_OF_THE_CONTEXT_MENU_ITEM"
+         * } 
+         */
+
+
+        universalValues.contextMenuStatus = status
+        universalValues.contextMenuData = contextMenuData
+        this.node.addEventListener("contextmenu", (e) => {
+            e.preventDefault()
+            if (status) {
+                const contextMenu = document.createElement("div")
+                // if cursor hover the context menu, it will be pointer
+                contextMenu.style.cursor = "pointer"
+                contextMenu.className = "bigLeafContextMenu"
+                contextMenu.style.position = "absolute"
+                contextMenu.style.left = `${e.clientX}px`
+                contextMenu.style.top = `${e.clientY}px`
+                contextMenu.style.zIndex = 9999
+                contextMenuData.forEach((item) => {
+                    const menuItem = document.createElement("div")
+                    // add default styles to context menu items
+                    menuItem.style.backgroundColor = style?.backgroundColor || "#fff"
+                    menuItem.style.color = style?.color || "#000"
+                    menuItem.style.fontSize = style?.fontSize || "16px"
+                    menuItem.style.fontWeight = style?.fontWeight || "400"
+                    menuItem.style.padding = style?.padding || "10px"
+                    menuItem.style.border = style?.border || "1px solid #000"
+                    menuItem.style.borderRadius = style?.borderRadius || "5px"
+                    // add hover styles to context menu items
+                    menuItem.onmouseover = () => {
+                        menuItem.style.backgroundColor = style?.hoverBackgroundColor || "#000"
+                        menuItem.style.color = style?.hoverColor || "#fff"
+                        menuItem.style.fontSize = style?.hoverFontSize || "16px"
+                        menuItem.style.fontWeight = style?.hoverFontWeight || "400"
+                    }
+                    menuItem.onmouseout = () => {
+                        menuItem.style.backgroundColor = style?.backgroundColor || "#fff"
+                        menuItem.style.color = style?.color || "#000"
+                        menuItem.style.fontSize = style?.fontSize || "16px"
+                        menuItem.style.fontWeight = style?.fontWeight || "400"
+                    }
+
+                    menuItem.className = "bigLeafContextMenuItem"
+                    menuItem.innerText = item.title
+                    menuItem.onclick = () => {
+                        item.func()
+                        contextMenu.remove()
+                    }
+                    contextMenu.appendChild(menuItem)
+                })
+                this.node.appendChild(contextMenu)
+            }
+        })
+        this.node.addEventListener("click", () => {
+            if (document.querySelector(".bigLeafContextMenu")) {
+                document.querySelector(".bigLeafContextMenu").remove()
+            }
+        })
+
+    }
+
     // functionality of dragging a item on canvas (work with eventListeners)
     #dragging = drag.run(this.points, this.node)
     // functionality to stop dragging a item on canvas (work with eventListeners)
